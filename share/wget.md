@@ -1,5 +1,4 @@
-wget Snippets
-=============
+# wget snippets
 
 ## Mirror a Website
 

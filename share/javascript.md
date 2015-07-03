@@ -1,5 +1,4 @@
-JavaScript Snippets
-===================
+# JavaScript snippets
 
 ## Generate a UUID:
 

@@ -1,5 +1,4 @@
-Python Snippets
-===============
+# Python snippets
 
 ## Generate Random MAC Addresses
 

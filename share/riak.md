@@ -1,22 +1,30 @@
-Riak Snippets
-=============
+# Riak snippets
 
-## Determine Open File Limits from Erlang
+## Search cluster info logs
 
-To verify that Riak is using the correct open file limits setting, use
-`riak attach`, and issue the following command:
-
-```
-os:cmd("ulimit -n").
+```bash
+grep -E '^[a-zA-Z_]+ *<[0-9]\.[0-9]*\.[0-9]> *.*' cluster_info.txt | sort -k 1,1 -s | less
 ```
 
-To check open file limits on a remote node, use this command:
+## Grab LevelDB LOG files:
 
-```
-rpc:call('riak@node07.example.com', os, cmd, ["ulimit -n"]).
+```bash
+mkdir leveldb_logs
+cd leveldb_logs
+for l in `ls -1 /var/lib/riak/leveldb/`; do cp /var/lib/riak/leveldb/$l/LOG ./LOG_$l; done
 ```
 
-Don't forget to **CONTROL-D** out of the `riak attach` session.
+## Find LevelDB compaction errors:
+
+```bash
+find </path/to/leveldb> -name LOG -exec grep -l 'Compaction error' {} \;
+```
+
+## Ping a node with netcat:
+
+```bash
+echo -e "\x00\x00\x00\x01\x01" | nc 127.0.0.1 8087 | hexdump
+```
 
 ## Count Keys in a Node's Bitcask
 
@@ -76,17 +84,3 @@ Output looks like this:
 ```
 
 Don't forget to **CONTROL-D** out of the `riak attach` session.
-
-## Remote Shell
-
-To get a remote Erlang shell on a Riak node, use the following `erl` command:
-
-```bash
-erl -remsh riak@node07.example.com -setcookie riak
-```
-
-Note that a few things are different about the remote shell (or remsh):
-
-1. Exit the console with **CONTROL-G q**
-2. Lager messages will not be present in a remote shell console
-3. The shell can be affected by load and network much as a ssh connection can, and will become unresponsive in such cases
