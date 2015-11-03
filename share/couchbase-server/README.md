@@ -9,6 +9,11 @@ clusters organized into three areas of usefulness:
 
 ## Command Line
 
+Some of the following command line examples require utilities like:
+
+* `curl`
+* `jq`
+
 ### Capture Memcached Traffic
 
 ```
@@ -23,12 +28,6 @@ tcpdump -vvXSs src {source IP} and dst {destination IP} and port {11210} -w capt
 
 ```
 /opt/couchbase/bin/cbrestorewrapper -u Administrator -p couchbase --path /opt/couchbase/bin /opt/couchbase_backups/ http://centos-0663-brian.local:8091
-```
-
-### Change Maximum Buckets Number
-
-```
-curl -X POST -u Administrator:password http://localhost:8091/internalSettings -d 'maxBucketCount=6'
 ```
 
 ### Check item count in cbbackup SQLite files
@@ -87,20 +86,6 @@ Example output:
 /opt/couchbase/bin/couch_dbdump --no-body "$vbucket_file" | awk '/^     id: / {sub(/     id: /,""); print}' > keylist
 ```
 
-### Get Cluster Name
-
-This is for Couchbase Server versions => 3.0.0:
-
-```
-curl -s -u Administrator:password http://localhost:8091/internalSettings/visual | jq -r '.tabName'
-```
-
-### Identify Cluster Orchestrator Node
-
-```
-curl -u Administrator:password http://localhost:8091/diag/eval -d 'node(global:whereis_name(ns_orchestrator)).'
-```
-
 ### List Active vBuckets on Node
 
 ```
@@ -113,12 +98,6 @@ Use `cbcollect_info` to get a large collection of detailed logging
 in a snapshot style. There are also log files in the Couchbase Server log
 directory, `/opt/couchbase/var/lib/couchbase/logs` some of which are
 human-readable.
-
-### Monitor View Indexing Progress
-
-```
-curl -s -X GET -u Administrator:password http://localhost:8091/pools/default/tasks | jq  --raw-output '.[] | select(.type=="indexer") | "\(.bucket) \(.designDocument) Completed \(.changesDone) of \(.totalChanges) \(.changesDone/.totalChanges)%" ' | column -t
-```
 
 ### Read config.dat
 
@@ -139,24 +118,6 @@ sudo rm -rf /opt/couchbase/var/lib/couchbase/data && \
 sudo service couchbase-server start
 ```
 
-### Restart Cluster Manager
-
-```
-curl -u Administrator:password http://localhost:8091/diag/eval -d "erlang:halt()."
-```
-
-### Restart Erlang Name Service
-
-```
-curl -u Administrator:password http://hostname:8091/diag/eval -d 'rpc:call(mb_master:master_node(), erlang, apply ,[fun () -> erlang:exit(erlang:whereis(mb_master), kill) end, []]).' 
-```
-
-### Restart View Manager
-
-```
-curl -X POST -u Administrator:<password> http://<host>:8091/diag/eval -d 'rpc:eval_everywhere(erlang, apply, [fun () -> [exit(whereis(list_to_atom("capi_set_view_manager-" ++ B)), kill) || B <- ns_bucket:get_bucket_names(membase)] end, []]).'
-```
-
 ### Run Access Log Scanner Manually
 
 ```
@@ -167,7 +128,7 @@ cbepctl -b <bucket> <node>:11210 set flush_param alog_sleep_time 2
 
 ```
 for i in {1..3}; do
-sleep `expr $RANDOM % 90` && curl -u Administrator:couchbase http://cb1.local:8091/pools/default/buckets | python -mjson.tool | grep hostname;
+sleep `expr $RANDOM % 90` && curl -u Administrator:password http://cb1.local:8091/pools/default/buckets | python -mjson.tool | grep hostname;
 done
 ```
 
@@ -187,6 +148,38 @@ tshark -r {capture}.pcap -R "tcp.port==11210 and couchbase.opcode==0 and couchba
 
 ## REST API
 
+### Change Maximum Buckets Number
+
+```
+curl -X POST -u Administrator:password http://localhost:8091/internalSettings -d 'maxBucketCount=6'
+```
+
+### Get Cluster Name
+
+This is for Couchbase Server versions => 3.0.0:
+
+```
+curl -s -u Administrator:password http://localhost:8091/internalSettings/visual | jq -r '.tabName'
+```
+
+### Get Node Logs
+
+```
+curl -s -u Administrator:password http://localhost:8091/logs | jq '.'
+```
+
+### Get Node Statuses
+
+```
+curl -s -u Administrator:password http://localhost:8091/nodeStatuses | jq '.'
+```
+
+### Monitor View Indexing Progress
+
+```
+curl -s -X GET -u Administrator:password http://localhost:8091/pools/default/tasks | jq  --raw-output '.[] | select(.type=="indexer") | "\(.bucket) \(.designDocument) Completed \(.changesDone) of \(.totalChanges) \(.changesDone/.totalChanges)%" ' | column -t
+```
+
 ### Diag Eval Endpoint Snippets
 
 Couchbase Server provides a REST API endpoint at `/diag/eval` that 
@@ -194,7 +187,31 @@ for advanced node control and configuration. Typically, commands used with
 this endpoint involved specialized knowledge of Couchbase Server internals,
 and should not be taken lightly or used haphazardly.
 
-### Set ALE Log Level to Error
+#### Identify Cluster Orchestrator Node
+
+```
+curl -u Administrator:password http://localhost:8091/diag/eval -d 'node(global:whereis_name(ns_orchestrator)).'
+```
+
+#### Restart Cluster Manager
+
+```
+curl -u Administrator:password http://localhost:8091/diag/eval -d "erlang:halt()."
+```
+
+#### Restart Erlang Name Service
+
+```
+curl -u Administrator:password http://hostname:8091/diag/eval -d 'rpc:call(mb_master:master_node(), erlang, apply ,[fun () -> erlang:exit(erlang:whereis(mb_master), kill) end, []]).' 
+```
+
+#### Restart View Manager
+
+```
+curl -X POST -u Administrator:<password> http://<host>:8091/diag/eval -d 'rpc:eval_everywhere(erlang, apply, [fun () -> [exit(whereis(list_to_atom("capi_set_view_manager-" ++ B)), kill) || B <- ns_bucket:get_bucket_names(membase)] end, []]).'
+```
+
+#### Set ALE Log Level to Error
 
 "ale:set_logelevel(ns_server, error)."
 
