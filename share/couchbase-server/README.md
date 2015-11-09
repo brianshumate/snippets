@@ -14,6 +14,32 @@ Some of the following command line examples require utilities like:
 * `curl`
 * `jq`
 
+### Backup Verification with SQLite
+
+The `cbbackup` utility writes Couchbase Server backup data as SQLite database
+files. After performing backups with `cbbackup`, you can inspect the files
+to do some basic integrity checking and item count verification:
+
+#### Check integrity of cbbackup SQLite file
+
+```
+sqlite3 <backup_file.cbb>
+PRAGMA integrity_check;
+```
+
+The expected result is:
+
+```
+ok
+```
+
+#### Check item count in cbbackup SQLite file
+
+```
+sqlite3 <backup_file.cbb>
+select count(*) from (select distinct key from cbb_msg);
+```
+
 ### Capture Memcached Traffic
 
 ```
@@ -28,13 +54,6 @@ tcpdump -vvXSs src {source IP} and dst {destination IP} and port {11210} -w capt
 
 ```
 /opt/couchbase/bin/cbrestorewrapper -u Administrator -p couchbase --path /opt/couchbase/bin /opt/couchbase_backups/ http://centos-0663-brian.local:8091
-```
-
-### Check item count in cbbackup SQLite files
-
-```
-sqlite3 <backup_file.cbb>
-select count(*) from (select distinct key from cbb_msg);
 ```
 
 ### Count emfile Errors by Date
