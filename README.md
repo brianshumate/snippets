@@ -1,20 +1,34 @@
-# Snippets
+```
+              __                     __ 
+.-----.-----.|__|.-----.-----.-----.|  |_.-----.
+|__ --|     ||  ||  _  |  _  |  -__||   _|__ --|
+|_____|__|__||__||   __|   __|_____||____|_____|
+                 |__|  |__|
+
+```
 
 This is my collection of random snippets organized by language and utility.
 
 These are mainly here for my reference (and to confuse GitHub's language
-detection code), but if you find anything useful then that's great.
+detection code), but if you find anything useful in here then that's great.
 
-I'll be updating this over time as much as I can.
+> It's a living document thing that receives periodic updates through PDF
+> printouts emphasized by red Sharpie strokes until morale improves.
 
-## For What?
+## Snippets for What?
 
-Snippets are currently available for the following: 
+At present, jive-talk-free, various and sundry snippets are available 
+for the following:
 
 * Ansible
 * Couchbase Server
+* curl
 * Docker
+* Erlang
+* HTTPie
 * JavaScript
+* Mac OS X
+* Meteor
 * Python
 * Riak
 * shell
