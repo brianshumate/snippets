@@ -20,16 +20,16 @@ detection code), but if you find anything useful in here then that's great.
 At present, jive-talk-free, various and sundry snippets are available 
 for the following:
 
-* Ansible
-* Couchbase Server
-* curl
-* Docker
-* Erlang
-* HTTPie
-* JavaScript
-* Mac OS X
-* Meteor
-* Python
-* Riak
-* shell
-* wget
+* [Ansible](https://github.com/brianshumate/snippets/blob/master/share/ansible/README.md)
+* [Couchbase Server](https://github.com/brianshumate/snippets/blob/master/share/couchbase-server/README.md)
+* [curl](https://github.com/brianshumate/snippets/blob/master/share/curl/README.md)
+* [Docker](https://github.com/brianshumate/snippets/blob/master/share/docker/README.md)
+* [Erlang](https://github.com/brianshumate/snippets/blob/master/share/erlang/README.md)
+* [HTTPie](https://github.com/brianshumate/snippets/blob/master/share/httpie/README.md)
+* [JavaScript](https://github.com/brianshumate/snippets/blob/master/share/javascript/README.md)
+* [Mac OS X](https://github.com/brianshumate/snippets/blob/master/share/osx/README.md)
+* [Meteor](https://github.com/brianshumate/snippets/blob/master/share/meteor/README.md)
+* [Python](https://github.com/brianshumate/snippets/blob/master/share/python/README.md)
+* [Riak](https://github.com/brianshumate/snippets/blob/master/share/riak/README.md)
+* [shell](https://github.com/brianshumate/snippets/blob/master/share/shell/README.md)
+* [wget](https://github.com/brianshumate/snippets/blob/master/share/wget/README.md)
