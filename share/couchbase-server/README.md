@@ -62,7 +62,17 @@ tcpdump -vvXSs src {source IP} and dst {destination IP} and port {11210} -w capt
 find . -name ns_server.error.log -print -exec sh -c "awk '/YYYY-MM-DDT/,/emfile/' {} | grep emfile | wc -l" \;
 ```
 
+### Count vBucket Items per Bucket
+
+Credit: Brent Woodruff
+
+```
+awk -v bucket=beer-sample 'BEGIN {v=0; while(v<1024) { command="/opt/couchbase/bin/cbstats localhost:11210 -b " bucket " vbucket-details " v; while( (command | getline o) > 0) {if(o ~ /num_items/) {sub(/:num_items:/, "", o); print o} } close(command); v++ } }'
+```
+
 ### Detect Stuck vBuckets
+
+Credit: Brent Woodruff
 
 In some 3.x versions, a rebalance operation can hang due to stuck vBuckets.
 The following `awk` script can help identify them:
