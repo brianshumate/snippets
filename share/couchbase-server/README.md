@@ -67,7 +67,16 @@ find . -name ns_server.error.log -print -exec sh -c "awk '/YYYY-MM-DDT/,/emfile/
 Credit: Brent Woodruff
 
 ```
-awk -v bucket=beer-sample 'BEGIN {v=0; while(v<1024) { command="/opt/couchbase/bin/cbstats localhost:11210 -b " bucket " vbucket-details " v; while( (command | getline o) > 0) {if(o ~ /num_items/) {sub(/:num_items:/, "", o); print o} } close(command); v++ } }'
+awk -v bucket=tacos 'BEGIN {v=0; while(v<1024) { command="/opt/couchbase/bin/cbstats localhost:11210 -b " bucket " vbucket-details " v; while( (command | getline o) > 0) {if(o ~ /num_items/) {sub(/:num_items:/, "", o); print o} } close(command); v++ } }'
+```
+
+### Detect Data Loss
+
+Some types of data loss during rebalance scenarios can be found with:
+
+
+```
+grep -e 'Data has been lost' -e 'Lost data in' diag.log
 ```
 
 ### Detect Stuck vBuckets
