@@ -3,9 +3,10 @@
 This is a collection of snippets related to operating Couchbase Server
 clusters organized into three areas of usefulness:
 
-* Command Line
-* REST API
-* Web Console UI
+* [Command Line](#command-line)
+* [REST API](#rest-api)
+* [Views](#views)
+* [Web Console UI](#web-console-ui)
 
 ## Command Line
 
@@ -13,6 +14,8 @@ Some of the following command line examples require utilities like:
 
 * `curl`
 * `jq`
+* `sqlite`
+* `tcpdump`
 
 ### Backup Verification with SQLite
 
@@ -22,7 +25,7 @@ to do some basic integrity checking and item count verification:
 
 #### Check integrity of cbbackup SQLite file
 
-```
+```shell
 sqlite3 <backup_file.cbb>
 PRAGMA integrity_check;
 ```
@@ -42,23 +45,23 @@ select count(*) from (select distinct key from cbb_msg);
 
 ### Capture Memcached Traffic
 
-```
+```shell
 tcpdump -vvXSs src {source IP} and dst {destination IP} and port {11210} -w capture_file.pcap
 ```
 
 ### cbbackupwrapper / cbrestorewrapper
 
-```
+```shell
 /opt/couchbase/bin/cbbackupwrapper http://centos-0663-brian.local:8091 -u Administrator -p couchbase -n 100 -v --path /opt/couchbase/bin /opt/couchbase_backups/
 ```
 
-```
+```shell
 /opt/couchbase/bin/cbrestorewrapper -u Administrator -p couchbase --path /opt/couchbase/bin /opt/couchbase_backups/ http://centos-0663-brian.local:8091
 ```
 
 ### Count emfile Errors by Date
 
-```
+```shell
 find . -name ns_server.error.log -print -exec sh -c "awk '/YYYY-MM-DDT/,/emfile/' {} | grep emfile | wc -l" \;
 ```
 
@@ -66,7 +69,7 @@ find . -name ns_server.error.log -print -exec sh -c "awk '/YYYY-MM-DDT/,/emfile/
 
 Credit: Brent Woodruff
 
-```
+```shell
 awk -v bucket=tacos 'BEGIN {v=0; while(v<1024) { command="/opt/couchbase/bin/cbstats localhost:11210 -b " bucket " vbucket-details " v; while( (command | getline o) > 0) {if(o ~ /num_items/) {sub(/:num_items:/, "", o); print o} } close(command); v++ } }'
 ```
 
@@ -75,7 +78,7 @@ awk -v bucket=tacos 'BEGIN {v=0; while(v<1024) { command="/opt/couchbase/bin/cbs
 Some types of data loss during rebalance scenarios can be found with:
 
 
-```
+```shell
 grep -e 'Data has been lost' -e 'Lost data in' diag.log
 ```
 
@@ -86,29 +89,30 @@ Credit: Brent Woodruff
 In some 3.x versions, a rebalance operation can hang due to stuck vBuckets.
 The following `awk` script can help identify them:
 
-```
+```shell
 cd /opt/couchbase/var/lib/couchbase/logs
 for file in $(ls -tr memcached.log.*); 
 do cat "$file"; done | awk -f /path/to/stuck_vbuckets.awk
 ```
 
-You'll need [stuck_vbuckets.awk]() for the above command.
+You'll need the [stuck_vbuckets.awk](https://raw.githubusercontent.com/brianshumate/snippets/master/share/couchbase-server/stuck_vbuckets.awk) awk
+script for the above command.
 
 ### Detect Uptime Change
 
-```
+```shell
 egrep "^uptime|^\[ns_doctor" ns_server.stats.log
 ```
 
 ### Examine Rebalance Operations
 
-```
+```shell
 egrep 'Starting rebalance|Rebalance completed|Rebalance exited' diag.log
 ```
 
 ### Find Bucket Deletion Events
 
-```
+```shell
 grep 'for deletion' ns_server.info.log
 ```
 
@@ -120,13 +124,13 @@ Example output:
 
 ### Generate a Keylist with couchdb-dump
 
-```
+```shell
 /opt/couchbase/bin/couch_dbdump --no-body "$vbucket_file" | awk '/^     id: / {sub(/     id: /,""); print}' > keylist
 ```
 
 ### List Active vBuckets on Node
 
-```
+```shell
 cbstats localhost:11210 -b default vbucket-details | grep active | cut -f1 -d: | cut -f2 -d_ | sort -n
 ```
 
@@ -142,13 +146,13 @@ human-readable.
 The node configuration file `config.dat` is a binary formatted file; this
 one-liner uses Erlang to print it to standard out in a human-readable format:
 
-```
+```shell
 /opt/couchbase/bin/erl -noinput -eval 'case file:read_file("/opt/couchbase/var/lib/couchbase/config/config.dat") of {ok, B}  -> io:format("~p~n", [binary_to_term(B)]) end.' -run init stop
 ```
 
 ### Reset Couchbase Server Configuration
 
-```
+```shell
 sudo service couchbase-server stop && \
 sudo rm -rf rm /opt/couchbase/var/lib/couchbase/ip* && \
 sudo rm -rf /opt/couchbase/var/lib/couchbase/config/config.dat && \
@@ -158,13 +162,13 @@ sudo service couchbase-server start
 
 ### Run Access Log Scanner Manually
 
-```
+```shell
 cbepctl -b <bucket> <node>:11210 set flush_param alog_sleep_time 2
 ```
 
 ### Access buckets with sleep
 
-```
+```shell
 for i in {1..3}; do
 sleep `expr $RANDOM % 90` && curl -u Administrator:password http://cb1.local:8091/pools/default/buckets | python -mjson.tool | grep hostname;
 done
@@ -174,13 +178,13 @@ done
 
 Get K/V from capture on get(opcode=0) request(magic=128):
 
-```
+```shell
 tshark -r {capture}.pcap -R "tcp.port==11210 and memcache.opcode==0 and memcache.magic==128" -T fields -E separator=';' -e memcache.key -e memcache.value
 ```
 
 With tshark => v1.99:
 
-```
+```shell
 tshark -r {capture}.pcap -R "tcp.port==11210 and couchbase.opcode==0 and couchbase.magic==128" -T fields -E separator=';' -e couchbase.key -e couchbase.value
 ```
 
@@ -188,7 +192,7 @@ tshark -r {capture}.pcap -R "tcp.port==11210 and couchbase.opcode==0 and couchba
 
 ### Change Maximum Buckets Number
 
-```
+```shell
 curl -X POST -u Administrator:password http://localhost:8091/internalSettings -d 'maxBucketCount=6'
 ```
 
@@ -196,25 +200,25 @@ curl -X POST -u Administrator:password http://localhost:8091/internalSettings -d
 
 This is for Couchbase Server versions => 3.0.0:
 
-```
+```shell
 curl -s -u Administrator:password http://localhost:8091/internalSettings/visual | jq -r '.tabName'
 ```
 
 ### Get Node Logs
 
-```
+```shell
 curl -s -u Administrator:password http://localhost:8091/logs | jq '.'
 ```
 
 ### Get Node Statuses
 
-```
+```shell
 curl -s -u Administrator:password http://localhost:8091/nodeStatuses | jq '.'
 ```
 
 ### Monitor View Indexing Progress
 
-```
+```shell
 curl -s -X GET -u Administrator:password http://localhost:8091/pools/default/tasks | jq  --raw-output '.[] | select(.type=="indexer") | "\(.bucket) \(.designDocument) Completed \(.changesDone) of \(.totalChanges) \(.changesDone/.totalChanges)%" ' | column -t
 ```
 
@@ -227,34 +231,98 @@ and should not be taken lightly or used haphazardly.
 
 #### Identify Cluster Orchestrator Node
 
-```
+```shell
 curl -u Administrator:password http://localhost:8091/diag/eval -d 'node(global:whereis_name(ns_orchestrator)).'
 ```
 
 #### Restart Cluster Manager
 
-```
+```shell
 curl -u Administrator:password http://localhost:8091/diag/eval -d "erlang:halt()."
 ```
 
 #### Restart Erlang Name Service
 
-```
+```shell
 curl -u Administrator:password http://hostname:8091/diag/eval -d 'rpc:call(mb_master:master_node(), erlang, apply ,[fun () -> erlang:exit(erlang:whereis(mb_master), kill) end, []]).' 
 ```
 
 #### Restart View Manager
 
-```
+```shell
 curl -X POST -u Administrator:<password> http://<host>:8091/diag/eval -d 'rpc:eval_everywhere(erlang, apply, [fun () -> [exit(whereis(list_to_atom("capi_set_view_manager-" ++ B)), kill) || B <- ns_bucket:get_bucket_names(membase)] end, []]).'
 ```
 
 #### Set ALE Log Level to Error
 
-"ale:set_logelevel(ns_server, error)."
+This can be set via `/diag/eval` endpoint or in the `static_config` file.
 
-Massive general performance increase can be had with this setting at the
-expense of less logging detail
+A general performance increase can be had with all logs set to 
+error at the expense of less logging detail
+
+FIXME: this needs updating:
+
+```shell
+curl -X POST -u Administrator:<password> http://<host>:8091/diag/eval -d 'ale:set_logelevel(ns_server, error).'
+```
+
+Edit static file (instead of above):
+```
+$EDITOR /opt/couchbase/etc/couchbase/static_config
+```
+
+Change log level for desired components as appropriate; here are the defaults:
+
+```
+{loglevel_default, debug}.
+{loglevel_couchdb, info}.
+{loglevel_ns_server, debug}.
+{loglevel_error_logger, debug}.
+{loglevel_user, debug}.
+{loglevel_menelaus, debug}.
+{loglevel_ns_doctor, debug}.
+{loglevel_stats, debug}.
+{loglevel_rebalance, debug}.
+{loglevel_cluster, debug}.
+{loglevel_views, debug}.
+{loglevel_mapreduce_errors, debug}.
+{loglevel_xdcr, debug}.
+{loglevel_xdcr_trace, error}.
+{loglevel_access, info}.
+```
+
+## Views
+
+### Get Document Sizes
+
+Map function:
+
+```javascript
+function(doc, meta) {
+    emit(meta.id, JSON.stringify(doc).length);
+}
+```
+
+Reduce function:
+
+Use the built-in `_stats` reduce function.
+
+Output:
+
+```json
+{
+    "rows": [{
+        "key": null,
+        "value": {
+            "sum": 2760276,
+            "count": 9001,
+            "min": 300,
+            "max": 308,
+            "sumsqr": 846481068
+        }
+    }]
+}
+```
 
 ## Web Console UI
 
@@ -277,13 +345,13 @@ http://cb1.example.local:8091/?enableInternalSettings=1
 
 Use `cbstats` to get all node statistics for the *default* bucket:
 
-```
+```shell
 cbstats node01.example.com:11210 all
 ```
 
 This command example is to get stats only for the *fnord* bucket with
 password authentication:
 
-```
+```shell
 cbstats node01.example.com:11210 all -b fnord -p potrzebie
 ```

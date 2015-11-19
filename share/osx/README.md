@@ -53,3 +53,9 @@ raise the limits without a restart for the root user as well:
 ```
 sudo launchctl limit maxfiles 65536 65536
 ```
+
+## Mount Encrypted Disk Image
+
+```
+hdiutil attach -stdinpass image_file.dmg
+```
