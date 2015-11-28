@@ -196,12 +196,30 @@ tshark -r {capture}.pcap -R "tcp.port==11210 and couchbase.opcode==0 and couchba
 curl -X POST -u Administrator:password http://localhost:8091/internalSettings -d 'maxBucketCount=6'
 ```
 
+### Directory of Statistics Endpoints
+
+```
+http http://cb1.local:8091/pools/default/buckets/default/statsDirectory
+```
+
 ### Get Cluster Name
 
 This is for Couchbase Server versions => 3.0.0:
 
 ```shell
 curl -s -u Administrator:password http://localhost:8091/internalSettings/visual | jq -r '.tabName'
+```
+
+### Get Documents List
+
+```
+curl -u Administrator:password http://localhost:8091/pools/default/buckets/default/docs
+```
+
+### Get Random Key
+
+```
+curl -v http://localhost:8091/pools/default/buckets/default/localRandomKey
 ```
 
 ### Get Node Logs

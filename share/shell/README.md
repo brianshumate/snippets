@@ -20,6 +20,18 @@ Using `tr` like this:
 echo $VALUES tr "\n" " "
 ```
 
+### Create ISO-8601 Dates
+
+```
+date +"%Y-%m-%dT%H:%M:%SZ"
+```
+
+or
+
+```
+date -u +%Y-%m-%dT%H:%M:%S%z
+```
+
 ### Extract .deb files in BSDish Systems (including Mac OS X)
 
 ```
