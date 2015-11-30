@@ -52,9 +52,9 @@ in a `cbbackup` target directory:
 
 ```
 for bucket in $(find . -type d -name 'bucket-*'); do
-   BUCKET_NAME="$(echo ${bucket} | rev | cut -d '/' -f1 | rev)"
-   BUCKET_COUNT="$(find ${bucket} -name '*.cbb' -exec sqlite3 {} 'select key from cbb_msg' \; | wc -l)"
-   echo "${BUCKET_NAME} ${BUCKET_COUNT}"
+  BUCKET_NAME="$(echo ${bucket} | rev | cut -d '/' -f1 | rev)"
+  BUCKET_COUNT="$(find ${bucket} -name '*.cbb' -exec sqlite3 {} 'select key from cbb_msg' \; | wc -l)"
+  echo "${BUCKET_NAME} ${BUCKET_COUNT}"
 done
 ```
 
@@ -106,8 +106,9 @@ The following `awk` script can help identify them:
 
 ```shell
 cd /opt/couchbase/var/lib/couchbase/logs
-for file in $(ls -tr memcached.log.*); 
-do cat "$file"; done | awk -f /path/to/stuck_vbuckets.awk
+  for file in $(ls -tr memcached.log.*); do 
+  cat "$file"; done | awk -f /path/to/stuck_vbuckets.awk
+done
 ```
 
 You'll need the [stuck_vbuckets.awk](https://raw.githubusercontent.com/brianshumate/snippets/master/share/couchbase-server/stuck_vbuckets.awk) awk
@@ -185,7 +186,7 @@ cbepctl -b <bucket> <node>:11210 set flush_param alog_sleep_time 2
 
 ```shell
 for i in {1..3}; do
-sleep `expr $RANDOM % 90` && curl -u Administrator:password http://cb1.local:8091/pools/default/buckets | python -mjson.tool | grep hostname;
+  sleep `expr $RANDOM % 90` && curl -u Administrator:password http://cb1.local:8091/pools/default/buckets | python -mjson.tool | grep hostname;
 done
 ```
 
