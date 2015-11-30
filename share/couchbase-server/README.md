@@ -36,7 +36,7 @@ The expected result is:
 ok
 ```
 
-#### Check item count in cbbackup SQLite file
+#### Check item count in cbbackup SQLite File
 
 ```
 sqlite3 <backup_file.cbb>
@@ -55,6 +55,17 @@ for bucket in $(find . -type d -name 'bucket-*'); do
   BUCKET_NAME="$(echo ${bucket} | rev | cut -d '/' -f1 | rev)"
   BUCKET_COUNT="$(find ${bucket} -name '*.cbb' -exec sqlite3 {} 'select key from cbb_msg' \; | wc -l)"
   echo "${BUCKET_NAME} ${BUCKET_COUNT}"
+done
+```
+
+#### Generate Keylist for Each Bucket from cbbackup SQLite Files
+
+From the top-level `cbbackup` target directory, do:
+
+```
+for bucket in $(find . -type d -name 'bucket-*'); do
+  BUCKET_NAME="$(echo ${bucket} | rev | cut -d '/' -f1 | rev)"
+  find ${bucket} -name '*.cbb' -exec sqlite3 {} 'select key from cbb_msg' \; > ${BUCKET_NAME}_keylist.txt
 done
 ```
 
