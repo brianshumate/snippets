@@ -43,6 +43,21 @@ sqlite3 <backup_file.cbb>
 select count(*) from (select distinct key from cbb_msg);
 ```
 
+**NOTE**: This is the count of items in a bucket for one node.
+
+#### Check item counts for all buckets in cbbackup SQLite files
+
+This `bash` snippet will emit bucket name and total count for all buckets
+in a `cbbackup` target directory:
+
+```
+for bucket in $(find . -type d -name 'bucket-*'); do
+   BUCKET_NAME="$(echo ${bucket} | rev | cut -d '/' -f1 | rev)"
+   BUCKET_COUNT="$(find ${bucket} -name '*.cbb' -exec sqlite3 {} 'select key from cbb_msg' \; | wc -l)"
+   echo "${BUCKET_NAME} ${BUCKET_COUNT}"
+done
+```
+
 ### Capture Memcached Traffic
 
 ```shell
