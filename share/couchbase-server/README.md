@@ -52,7 +52,7 @@ in a `cbbackup` target directory:
 
 ```
 for bucket in $(find . -type d -name 'bucket-*'); do
-  BUCKET_NAME="$(echo ${bucket} | rev | cut -d '/' -f1 | rev)"
+  BUCKET_NAME="$(basename ${bucket})"
   BUCKET_COUNT="$(find ${bucket} -name '*.cbb' -exec sqlite3 {} 'select key from cbb_msg' \; | wc -l)"
   echo "${BUCKET_NAME} ${BUCKET_COUNT}"
 done
@@ -64,7 +64,7 @@ From the top-level `cbbackup` target directory, do:
 
 ```
 for bucket in $(find . -type d -name 'bucket-*'); do
-  BUCKET_NAME="$(echo ${bucket} | rev | cut -d '/' -f1 | rev)"
+  BUCKET_NAME="$(basename ${bucket})"
   find ${bucket} -name '*.cbb' -exec sqlite3 {} 'select key from cbb_msg' \; > ${BUCKET_NAME}_keylist.txt
 done
 ```
