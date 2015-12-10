@@ -88,7 +88,55 @@ tcpdump -vvXSs src {source IP} and dst {destination IP} and port {11210} -w capt
 ### Count emfile Errors by Date
 
 ```shell
-find . -name ns_server.error.log -print -exec sh -c "awk '/YYYY-MM-DDT/,/emfile/' {} | grep emfile | wc -l" \;
+find . -name ns_server.error.log -print  \
+-exec sh -c "awk '/YYYY-MM-DDT/,/emfile/' {} | grep emfile | wc -l" \;
+```
+
+### Count Error Instances
+
+Example: find and count errors for a date:
+
+Find `exception exit` errors for December 5th:
+
+```
+SEARCHDATE="2015-12-05"; for e in cbcollect_info_*/ns_server.error.log; do \
+printf "[${SEARCHDATE}] $(echo ${e} | cut -d'@' -f2 | cut -d'_' -f1) "; \
+grep -A 7 "${SEARCHDATE}" "${e}" | grep 'exception exit' -A 8 | wc -l; done
+```
+
+Example output:
+
+```
+[2015-12-05] cbnode0.local      129
+[2015-12-05] cbnode1.local      139
+[2015-12-05] cbnode2.local      159
+[2015-12-05] cbnode3.local     1699
+[2015-12-05] cbnode4.local      229
+[2015-12-05] cbnode5.local      399
+[2015-12-05] cbnode6.local       89
+[2015-12-05] cbnode7.local       19
+```
+
+Further narrow down to errors specifically about the `dir_size()` function:
+
+```
+SEARCHDATE="2015-12-05"; for e in cbcollect_info_*/ns_server.error.log; do \
+printf "[${SEARCHDATE}] $(echo ${e} | cut -d'@' -f2 | cut -d'_' -f1) "; \
+grep -A 7 "${SEARCHDATE}" "${e}" | grep 'exception exit' -A 8 | \
+grep dir_size | wc -l; done
+```
+
+Example output:
+
+```
+[2015-12-05] cbnode0.local        0
+[2015-12-05] cbnode1.local        0
+[2015-12-05] cbnode2.local        0
+[2015-12-05] cbnode3.local        4
+[2015-12-05] cbnode4.local        6
+[2015-12-05] cbnode5.local        0
+[2015-12-05] cbnode6.local        0
+[2015-12-05] cbnode7.local        1
 ```
 
 ### Count vBucket Items per Bucket

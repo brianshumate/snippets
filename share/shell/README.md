@@ -48,3 +48,26 @@ or sometimes `.xz` archives containing all packaged files.
 ```
 rpm2cpio file.rpm | cpio -i -d
 ```
+
+### Shenanigans with say
+
+```
+while true; \
+  do say -v ? | awk '{print $1}' | xargs -J% -n 1 say -v % butts; \
+done
+```
+
+h/t: Andrei Sambra
+
+```
+PHRASES=('please help me' 'i am so alone' 'i am lonely' 'pssssst' 'hello' 'hey, listen.' 'they did this to me' 'i must feed' 'power overwhelming'); while true; do say "${WORDS[$[ $[ RANDOM % ${#WORDS[@]} ]]]}" -v Whisper; sleep 300; done
+```
+
+```
+osascript -e 'say "Dum dum dum dum dum dum dum he he he ho ho ho fa lah lah lah lah lah lah fa lah full hoo hoo hoo" using "Cellos"'
+```
+
+```
+osascript -e 'say "Dum dum dee dum dum dum dum dee Dum dum dee dum dum dum dum dee dum dee dum dum dum de dum dum dum dee dum dee dum dum dee dummmmmmmmmmmmmmmmm" using "Hysterical"'
+
+```
