@@ -59,3 +59,28 @@ sudo launchctl limit maxfiles 65536 65536
 ```
 hdiutil attach -stdinpass image_file.dmg
 ```
+
+## Keychain
+
+Mac OS X provides the `security(1)` command for interfacing with the
+underlying security framework and keychains.
+
+### Add Keychain Item
+
+To add a generic password keychain item use a command like this:
+
+```
+security -a <account> -s <service> -p <password>
+```
+
+To add an internet password keychain item use a command like this:
+
+```
+security -v add-internet-password -a <account> -s <server> -w <password>
+```
+
+### Unlock Keychain
+
+```
+security unlock-keychain
+```
