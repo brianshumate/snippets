@@ -84,3 +84,17 @@ security -v add-internet-password -a <account> -s <server> -w <password>
 ```
 security unlock-keychain
 ```
+
+## Time Machine Backups
+
+Remove ACLs from manually restored directory of files:
+
+```
+chmod -RN <dir>
+```
+
+Remove extended attributed from manually restored directory of files:
+
+```
+xattr -r -c <dir>
+```
