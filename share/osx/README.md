@@ -90,11 +90,11 @@ security unlock-keychain
 Remove ACLs from manually restored directory of files:
 
 ```
-chmod -RN <dir>
+sudo chmod -RN <dir>
 ```
 
 Remove extended attributed from manually restored directory of files:
 
 ```
-xattr -r -c <dir>
+sudo xattr -r -c <dir>
 ```
