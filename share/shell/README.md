@@ -49,6 +49,14 @@ or sometimes `.xz` archives containing all packaged files.
 rpm2cpio file.rpm | cpio -i -d
 ```
 
+### Random-ish String
+
+Get a pseudorandom alphanumeric string of 32 characters in length like so:
+
+```
+LC_ALL=C; cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
+```
+
 ### Shenanigans with say
 
 ```
