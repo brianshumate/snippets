@@ -79,3 +79,11 @@ osascript -e 'say "Dum dum dum dum dum dum dum he he he ho ho ho fa lah lah lah 
 osascript -e 'say "Dum dum dee dum dum dum dum dee Dum dum dee dum dum dum dum dee dum dee dum dum dum de dum dum dum dee dum dee dum dum dee dummmmmmmmmmmmmmmmm" using "Hysterical"'
 
 ```
+
+### Storage Related
+
+Show top 10 largest directories and files in PWD:
+
+```
+du -h . | sort -nr | head
+```
