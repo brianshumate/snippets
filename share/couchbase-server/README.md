@@ -139,6 +139,21 @@ Example output:
 [2015-12-05] cbnode7.local        1
 ```
 
+### Determine Node and VBucket Information for Item
+
+
+You can find a key's vBucket or node with the `vbuckettool` command:
+
+```
+curl http://<node>:8091/pools/default/buckets/<bucket> \
+| /opt/couchbase/bin/tools/vbuckettool - <key>
+```
+
+Output looks like:
+
+```
+key: demo_key master: <node>:11210
+```
 ### Count vBucket Items per Bucket
 
 Credit: Brent Woodruff
