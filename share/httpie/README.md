@@ -1,1 +1,1 @@
-# HTTPie
+# HTTPie Snippets

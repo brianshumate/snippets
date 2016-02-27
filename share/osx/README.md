@@ -1,4 +1,4 @@
-# Mac OS X
+# Mac OS X Snippets
 
 ## Increase Maximum Open Files
 

@@ -1,4 +1,4 @@
-## shell snippets
+## Shell snippets
 
 ### Convert Newline Values to Space Separated
 

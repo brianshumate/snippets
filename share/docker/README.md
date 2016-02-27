@@ -1,4 +1,4 @@
-# Docker
+# Docker Snippets
 
 [Docker](https://www.docker.com/) is "an open platform for distributed
 applications for developers and sysadmins", and also a great container

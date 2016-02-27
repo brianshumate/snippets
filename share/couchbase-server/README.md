@@ -1,4 +1,4 @@
-# Couchbase Server
+# Couchbase Server Snippets
 
 This is a collection of snippets related to operating Couchbase Server
 clusters organized into three areas of usefulness:

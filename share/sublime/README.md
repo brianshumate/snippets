@@ -1,4 +1,4 @@
-# Sublime Text
+# Sublime Text snippets
 
 Find all non-ASCII characters in a file:
 
