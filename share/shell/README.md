@@ -49,6 +49,16 @@ or sometimes `.xz` archives containing all packaged files.
 rpm2cpio file.rpm | cpio -i -d
 ```
 
+### Git repositories update
+
+A basic example:
+
+```
+SOURCEPATH="$HOME/src/"
+for dirname r in `find . -name \.git | cut -d '.' -f 2`; do \
+pushd $SOURCEPATH$r; git up; popd; done
+```
+
 ### Random-ish String
 
 Get a pseudorandom alphanumeric string of 32 characters in length like so:
