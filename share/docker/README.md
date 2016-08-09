@@ -4,10 +4,14 @@
 applications for developers and sysadmins", and also a great container
 solution.
 
-## docker-machine
+## Stop and Remove by image name
 
-Here are some snippets which are handy when running Docker with Mac OS X
-using [boot2docker](https://github.com/boot2docker/boot2docker).
+Note: this needs 1.9 or higher.
+
+```
+docker stop $(docker ps -q --filter ancestor=<imagename>)
+docker remove $(docker ps -a -q --filter ancestor=<imagename>)
+```
 
 ## X Applications with Forwarded Display
 
