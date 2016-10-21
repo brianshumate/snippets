@@ -10,7 +10,7 @@ Note: this needs 1.9 or higher.
 
 ```
 docker stop $(docker ps -q --filter ancestor=<imagename>)
-docker remove $(docker ps -a -q --filter ancestor=<imagename>)
+docker rm $(docker ps -a -q --filter ancestor=<imagename>)
 ```
 
 ## X Applications with Forwarded Display
