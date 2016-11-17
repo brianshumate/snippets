@@ -97,3 +97,23 @@ Show top 10 largest directories and files in PWD:
 ```
 du -h . | sort -nr | head
 ```
+
+### Switching in bulk with sed
+
+Find and replace a string globally in files from the current directory:
+
+```
+find ./ -name <filename> -exec sed -i 's/string0/string1/g' {} \;
+```
+
+For global case insensitive:
+
+```
+find ./ -name <filename> -exec sed -i 's/string0/string1/gI' {} \;
+```
+
+BSD sed needs an extension for `-i` and also uses `-e`:
+
+```
+find ./ -name <filename> -exec sed -i '' -e 's/string0/string1/g' {} \;
+```
