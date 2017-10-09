@@ -17,25 +17,25 @@ these newline separated values as the variable VALUES:
 Using `tr` like this:
 
 ```
-echo $VALUES tr "\n" " "
+$ echo $VALUES tr "\n" " "
 ```
 
 ### Create ISO-8601 Dates
 
 ```
-date +"%Y-%m-%dT%H:%M:%SZ"
+$ date +"%Y-%m-%dT%H:%M:%SZ"
 ```
 
 or
 
 ```
-date -u +%Y-%m-%dT%H:%M:%S%z
+$ date -u +%Y-%m-%dT%H:%M:%S%z
 ```
 
 ### Extract .deb files in BSDish Systems (including Mac OS X)
 
 ```
-ar vx <filename>
+$ ar vx <filename>
 ```
 
 Where `<filename>` is replace with the `.deb` file that you wish to extract.
@@ -46,7 +46,7 @@ or sometimes `.xz` archives containing all packaged files.
 ### Extract RPM with cpio
 
 ```
-rpm2cpio file.rpm | cpio -i -d
+$ rpm2cpio file.rpm | cpio -i -d
 ```
 
 ### Git repositories update
@@ -54,9 +54,9 @@ rpm2cpio file.rpm | cpio -i -d
 A basic example:
 
 ```
-SOURCEPATH="$HOME/src/"
-for dirname r in `find . -name \.git | cut -d '.' -f 2`; do \
-pushd $SOURCEPATH$r; git up; popd; done
+$ export SOURCEPATH="$HOME/src/"
+$ for dirname r in `find . -name \.git | cut -d '.' -f 2`; do \
+  pushd $SOURCEPATH$r; git up; popd; done
 ```
 
 ### Random-ish String
@@ -64,21 +64,21 @@ pushd $SOURCEPATH$r; git up; popd; done
 Get a pseudorandom alphanumeric string of 32 characters in length like so:
 
 ```
-LC_ALL=C; cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
+$ LC_ALL=C; cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
 ```
 
 ### Shenanigans with say
 
 ```
-while true; \
-  do say -v ? | awk '{print $1}' | xargs -J% -n 1 say -v % butts; \
-done
+$ while true; \
+    do say -v ? | awk '{print $1}' | xargs -J% -n 1 say -v % butts; \
+  done
 ```
 
 h/t: Andrei Sambra
 
 ```
-PHRASES=('please help me' 'i am so alone' 'i am lonely' 'pssssst' 'hello' 'hey, listen.' 'they did this to me' 'i must feed' 'power overwhelming'); while true; do say "${WORDS[$[ $[ RANDOM % ${#WORDS[@]} ]]]}" -v Whisper; sleep 300; done
+PHRASES=('please help me' 'i am so alone' 'i am lonely' 'pssssst' 'hello' 'hey, listen.' 'they did this to me' 'i must feed' 'power overwhelming'); while true; do say "${PHRASES[$[ $[ RANDOM % ${#PHRASES[@]} ]]]}" -v Whisper; sleep 300; done
 ```
 
 ```
@@ -116,4 +116,25 @@ BSD sed needs an extension for `-i` and also uses `-e`:
 
 ```
 find ./ -name <filename> -exec sed -i '' -e 's/string0/string1/g' {} \;
+```
+
+### Generate JSON
+
+Thanks, Brent!
+
+```
+(echo "[{"; for i in {0..50000}; do echo "\"key$i\": $i,"; done; echo "\"key$(($i+1))\": 0"; echo "}]" )>> big.json
+```
+
+### compinit: insecure directories
+
+```
+zsh compinit: insecure directories, run compaudit for list.
+Ignore insecure directories and continue [y] or abort compinit [n]?
+```
+
+Choose 'y' here so that we can then fix with:
+
+```
+$ compaudit | xargs chmod g-w
 ```
